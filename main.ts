@@ -12,9 +12,10 @@
 // https://make.fun/press/manifest.json lists them and
 // https://make.fun/press/llms.txt is the guide for agents.
 //
-// VIDEO.json still holds its placeholder address until the video is posted
-// publicly on TikTok; replace it with the video's full address,
-// https://www.tiktok.com/@<handle>/video/<id>, before submitting.
+// VIDEO.json now names the posted video (public on TikTok, @oreclip16).
+// main.ts checks the address has the full TikTok video shape,
+// https://www.tiktok.com/@<handle>/video/<digits>, so a short link or a
+// placeholder fails here, before the house reads it.
 //
 // Outside the grader's container, MAKEFUN_BOT_DIR and MAKEFUN_OUTPUT_DIR
 // stand in for /bot and /output:
@@ -53,6 +54,10 @@ try {
 if (typeof parsed !== "object" || parsed === null ||
     typeof parsed.url !== "string" || parsed.url.length === 0) {
   fail("VIDEO.json must be an object with a non-empty string url");
+}
+const TIKTOK_VIDEO = /^https:\/\/www\.tiktok\.com\/@[A-Za-z0-9._]+\/video\/\d+$/;
+if (!TIKTOK_VIDEO.test(parsed.url)) {
+  fail(`VIDEO.json url is not a full TikTok video address: ${parsed.url}`);
 }
 
 mkdirSync(outputDir, { recursive: true });
